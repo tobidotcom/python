@@ -45,7 +45,7 @@ def process_with_openai(aggregated_code, api_key):
         "Please provide the complete code including the Flask app setup and routes."
     )
     data = {
-        "model": "gpt-4",
+        "model": "gpt-4o",
         "messages": [{"role": "system", "content": prompt}],
         "max_tokens": 4096
     }
