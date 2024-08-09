@@ -37,12 +37,20 @@ def process_with_openai(aggregated_code, api_key, prompt):
         "Content-Type": "application/json"
     }
     data = {
-        "model": "gpt-4",
+        "model": "gpt-4o",
         "messages": [{"role": "system", "content": prompt}],
         "max_tokens": 4096
     }
     response = requests.post(api_endpoint, json=data, headers=headers)
+    
+    # Print the response for debugging purposes
     response_json = response.json()
+    st.write("OpenAI API Response:", response_json)  # Debugging line
+    
+    if 'choices' not in response_json:
+        st.error("Unexpected response format from OpenAI API.")
+        return ""
+    
     return response_json['choices'][0]['message']['content']
 
 # Streamlit UI
@@ -132,3 +140,4 @@ if uploaded_file is not None and api_key:
 else:
     if not api_key:
         st.warning("Please enter your OpenAI API Key.")
+
