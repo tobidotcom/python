@@ -52,37 +52,3 @@ def process_with_openai(aggregated_code, api_key):
     response = requests.post(api_endpoint, json=data, headers=headers)
     response_json = response.json()
     return response_json['choices'][0]['message']['content']
-
-# Function to create API documentation
-def create_api_documentation():
-    documentation = """# Flask API Documentation
-
-## Overview
-
-This is a Flask API application created from the provided Python scripts. Below are instructions on how to set up, run, and interact with the API.
-
-## Setup
-
-1. Install the required dependencies:
-    ```bash
-    pip install flask
-    ```
-
-2. Run the Flask application:
-    ```bash
-    python app.py
-    ```
-
-## API Endpoints
-
-- Refer to the `app.py` file for available endpoints and their descriptions.
-
-## Examples
-
-### Example Request
-
-To test the API, you can use curl or Postman. Here is an example using curl:
-
-```bash
-curl -X GET http://127.0.0.1:5000/your-endpoint
-
