@@ -13,16 +13,20 @@ def handle_file_upload(uploaded_file):
     
     with zipfile.ZipFile(uploaded_file, 'r') as zip_ref:
         zip_ref.extractall(temp_dir)
-        file_paths = [os.path.join(temp_dir, file) for file in zip_ref.namelist()]
+        file_paths = []
+        for root, _, files in os.walk(temp_dir):
+            for file in files:
+                file_paths.append(os.path.join(root, file))
     return file_paths, temp_dir
 
 # Function to aggregate all files content
 def aggregate_code(file_paths):
     aggregated_code = ""
     for file_path in file_paths:
-        with open(file_path, 'r') as file:
-            file_content = file.read()
-            aggregated_code += f"# File: {file_path}\n{file_content}\n\n"
+        if os.path.isfile(file_path):  # Ensure we only process files
+            with open(file_path, 'r') as file:
+                file_content = file.read()
+                aggregated_code += f"# File: {file_path}\n{file_content}\n\n"
     return aggregated_code
 
 # Function to send aggregated code to OpenAI API and get transformed content
@@ -115,7 +119,7 @@ if uploaded_file is not None and api_key:
         with zipfile.ZipFile(updated_zip_path, 'w') as zip_ref:
             for root, _, files in os.walk(updated_temp_dir):
                 for file in files:
-                    zip_ref.write(os.path.join(root, file), file)
+                    zip_ref.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), updated_temp_dir))
 
         st.success("Transformation and fixing complete. You can download your updated zip file now.")
         st.download_button("Download Updated Zip File", updated_zip_path, "application/zip")
